@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><link rel="stylesheet" href="style.css"><link rel="icon" href="logo.png"><title>Diwan Office · Etsy sign-in</title>
+<style>.code{background:var(--navy2);border-radius:10px;padding:14px;font:15px/1.4 ui-monospace,Menlo,monospace;word-break:break-all;color:var(--cream)}button{background:var(--gold);color:var(--navy);border:0;border-radius:8px;padding:10px 18px;font:600 16px "Changa",system-ui,sans-serif;cursor:pointer;margin:12px 12px 0 0}.err{color:#ff9b8a}</style></head>
+<body><header><div class="wrap"><img src="logo.png" alt="Diwan Studio logo"><strong>DIWAN STUDIO</strong></div></header>
+<main class="wrap">
+<h1 id="title">Etsy sign-in</h1>
+<p class="lead" id="lead">Handing the sign-in back to Diwan Office…</p>
+<div id="manual" hidden>
+<p>If Diwan Office did not open by itself, copy this code and paste it in the app (Shop → “Paste the code”):</p>
+<div class="code" id="code"></div>
+<button type="button" id="copy">Copy the code</button><button type="button" id="open">Open Diwan Office</button>
+</div>
+<p style="color:var(--muted);font-size:14px;margin-top:32px">This page runs only in your browser: the code is not sent or stored anywhere, and it works once, for the app that asked for it.</p>
+</main>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var code = q.get('code'), state = q.get('state'), error = q.get('error');
+  var lead = document.getElementById('lead');
+  if (error || !code || !state) {
+    document.getElementById('title').textContent = 'Etsy did not sign you in';
+    lead.className = 'lead err';
+    lead.textContent = (q.get('error_description') || error || 'No sign-in code came back.') + ' Close this page and try “Connect Etsy shop” in Diwan Office again.';
+    return;
+  }
+  var link = 'diwanoffice://etsy?code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(state);
+  var text = code + ' ' + state;
+  document.getElementById('code').textContent = text;
+  document.getElementById('manual').hidden = false;
+  document.getElementById('copy').onclick = function () { navigator.clipboard.writeText(text).then(function () { document.getElementById('copy').textContent = 'Copied'; }); };
+  document.getElementById('open').onclick = function () { location.href = link; };
+  // Remove the code from the address bar and history once read.
+  history.replaceState(null, '', location.pathname);
+  lead.textContent = 'Signed in. Diwan Office should open and finish connecting your shop.';
+  location.href = link;
+})();
+</script>
+</body></html>
